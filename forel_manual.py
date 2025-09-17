@@ -24,26 +24,33 @@ def forel_manual(points, rho, seed=42):
         center = points[start_idx][:]
         
         # шукаємо стабільний центр
-        for i in range(100):
+        max_iterations = 100
+        for iteration in range(max_iterations):
             nearby = []
+            
             for j in range(len(points)):
                 if distance(points[j], center) <= rho:
                     nearby.append(points[j])
             
+            if not nearby:  # якщо немає точок в радіусі
+                break
+                
             new_center = get_center(nearby)
-            if distance(center, new_center) < 0.001:
+            
+            if distance(center, new_center) < 1e-3:
                 break
             center = new_center
         
-        # формуємо кластер з невикористаних точок
+        # формуємо фінальний кластер з невикористаних точок
         cluster = []
-        for i in unused[:]:
+        for i in unused[:]:  # проходимо по копії списку
             if distance(points[i], center) <= rho:
                 cluster.append(i)
                 unused.remove(i)
         
-        clusters.append(cluster)
-        centers.append(center)
+        if cluster:  # додаємо тільки непусті кластери
+            clusters.append(cluster)
+            centers.append(center)
     
     return clusters, centers
 

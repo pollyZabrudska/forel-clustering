@@ -30,15 +30,15 @@ def plot_clusters(points, clusters, centers, rho):
     plt.title('Результати кластеризації Форел')
     plt.show()
 
-def compare_versions():
+def compare_versions(data=None, rho=2.5):
     from forel import forel
     from forel_manual import forel_manual
     
-    # використовуємо одні й ті самі дані
-    np.random.seed(42)
-    data = np.random.rand(20, 2) * 8
+    if data is None:
+        np.random.seed(42)
+        data = np.random.rand(30, 2) * 10
+    
     data_list = data.tolist()
-    rho = 2.0
     
     # тестуємо обидві версії з однаковим seed
     clusters1, centers1 = forel(data, rho, random_state=42)
@@ -48,7 +48,7 @@ def compare_versions():
     
     # numpy версія
     plt.subplot(1, 2, 1)
-    colors = ['red', 'blue', 'green', 'orange']
+    colors = ['red', 'blue', 'green', 'orange', 'purple', 'brown', 'pink', 'gray']
     for i, cluster in enumerate(clusters1):
         plt.scatter(data[cluster, 0], data[cluster, 1], 
                    c=colors[i % len(colors)], s=50)
