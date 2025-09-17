@@ -2,25 +2,6 @@ import numpy as np
 import random
 
 def forel(T: np.ndarray, rho: float, random_state: int = None):
-    """
-    Алгоритм Форел для кластеризації множини точок.
-
-    Parameters
-    ----------
-    T : np.ndarray
-        Масив точок розмірності (N, m), де N – кількість точок, m – розмірність простору.
-    rho : float
-        Радіус сфери.
-    random_state : int, optional
-        Фіксація генератора випадкових чисел для відтворюваності результатів.
-
-    Returns
-    -------
-    clusters : list[np.ndarray]
-        Список кластерів, де кожен елемент – індекси точок, що належать кластеру.
-    centers : list[np.ndarray]
-        Список центрів кластерів.
-    """
     
     if random_state is not None:
         random.seed(random_state)
