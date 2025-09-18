@@ -19,41 +19,43 @@ def forel_manual(points, rho, seed=42):
     centers = []
     
     while unused:
-        # обираємо випадкову точку
+        # обираємо випадкову точку з невикористаних
         start_idx = random.choice(unused) 
         center = points[start_idx][:]
         
         # шукаємо стабільний центр
-        max_iterations = 100
-        for iteration in range(max_iterations):
+        for iteration in range(100):  # максимум 100 ітерацій
             nearby = []
             
-            for j in range(len(points)):
+            # шукаємо точки тільки серед невикористаних
+            for j in unused:
                 if distance(points[j], center) <= rho:
                     nearby.append(points[j])
             
-            if not nearby:  # якщо немає точок в радіусі
+            if not nearby:
                 break
                 
             new_center = get_center(nearby)
             
-            if distance(center, new_center) < 1e-3:
+            # перевіряємо чи центр стабілізувався
+            if distance(center, new_center) < 0.001:
                 break
             center = new_center
         
-        # формуємо фінальний кластер з невикористаних точок
+        # формуємо кластер - знаходимо індекси точок біля фінального центру
         cluster = []
-        for i in unused[:]:  # проходимо по копії списку
+        for i in unused[:]:  # копіюємо список для послідуючого безпечного видалення
             if distance(points[i], center) <= rho:
                 cluster.append(i)
                 unused.remove(i)
         
-        if cluster:  # додаємо тільки непусті кластери
+        if cluster:
             clusters.append(cluster)
             centers.append(center)
     
     return clusters, centers
 
+# тестові дані
 if __name__ == "__main__":
     test_data = [
         [1, 1], [1.2, 1.1], [2, 2], 
@@ -66,3 +68,7 @@ if __name__ == "__main__":
     print(f"Знайдено {len(clusters)} кластерів:")
     for i, (cl, c) in enumerate(zip(clusters, centers)):
         print(f"Кластер {i+1}: точки {cl}, центр ({c[0]:.2f}, {c[1]:.2f})")
+    
+    # перевіряємо чи всі точки враховані
+    total_points = sum(len(cluster) for cluster in clusters)
+    print(f"Всього точок у кластерах: {total_points} (має бути {len(test_data)})")
